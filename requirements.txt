@@ -1,0 +1,47 @@
+# FastAPI core
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+
+# Config & env
+pydantic==2.7.4
+pydantic-settings==2.3.1
+python-dotenv==1.0.1
+
+# LLM & Agents
+crewai==0.51.0
+crewai-tools==0.8.3
+openai==1.57.0          # OpenRouter uses OpenAI-compatible API; >=1.40.0 required by langchain-openai 0.1.25
+litellm==1.41.0         # CrewAI uses LiteLLM under the hood
+
+# LangChain ecosystem - pinned to 0.2.x to prevent pip resolver backtracking
+# (crewai 0.51.0 → embedchain → langchain-community has huge transitive dep tree)
+langchain==0.2.17
+langchain-core==0.2.43
+langchain-community==0.2.19
+langchain-text-splitters==0.2.4
+langchain-openai==0.1.25
+langsmith==0.1.147
+embedchain==0.1.114
+mem0ai==0.0.20
+
+# Supabase (auth + db)
+supabase==2.5.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# E2B (sandboxed code execution)
+e2b-code-interpreter==0.0.7
+
+# Composio (tool integrations)
+composio-crewai==0.6.5
+composio-core==0.6.5
+
+# Rate limiting
+slowapi==0.1.9
+
+# HTTP client
+httpx==0.27.0
+
+# Logging
+structlog==24.2.0
