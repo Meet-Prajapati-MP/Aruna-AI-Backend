@@ -39,6 +39,11 @@ ROUTER PATTERN (this file):
 
 import os
 from typing import Optional
+
+try:
+    from pydantic.v1 import SecretStr   # pydantic v2 installed (langchain uses v1 shim)
+except ImportError:
+    from pydantic import SecretStr      # pydantic v1 installed directly
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -53,17 +58,17 @@ def _make_llm(temperature: float = 0.3):
     Build a CrewAI LLM.
 
     CLICK-BY-CLICK:
-    ① Import crewai.LLM  (deferred so startup stays fast)
+    ① Import ChatOpenAI  (deferred so startup stays fast)
     ② Read API key from environment
     ③ Build LLM with model string + base URL for OpenRouter
     """
-    from crewai import LLM  # ① deferred import
+    from langchain_openai import ChatOpenAI  # ① deferred import
 
-    api_key = os.environ.get("OPENROUTER_API_KEY", "")  # ②
+    api_key = SecretStr(os.environ.get("OPENROUTER_API_KEY", ""))  # ②
     base_url = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 
-    return LLM(                                          # ③
-        model="openrouter/anthropic/claude-3-haiku",    # fast + cheap for routing
+    return ChatOpenAI(                                   # ③
+        model="anthropic/claude-3-haiku",               # fast + cheap for routing
         temperature=temperature,
         api_key=api_key,
         base_url=base_url,
@@ -72,13 +77,13 @@ def _make_llm(temperature: float = 0.3):
 
 def _make_strong_llm(temperature: float = 0.5):
     """Stronger model for actual answering tasks."""
-    from crewai import LLM
+    from langchain_openai import ChatOpenAI
 
-    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    api_key = SecretStr(os.environ.get("OPENROUTER_API_KEY", ""))
     base_url = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 
-    return LLM(
-        model="openrouter/anthropic/claude-3-5-sonnet",
+    return ChatOpenAI(
+        model="anthropic/claude-3-5-sonnet",
         temperature=temperature,
         api_key=api_key,
         base_url=base_url,
