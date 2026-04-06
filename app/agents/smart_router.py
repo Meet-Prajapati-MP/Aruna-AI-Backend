@@ -122,7 +122,7 @@ def build_head_router_agent():
         llm=_fast_llm(temperature=0.0),
         verbose=True,
         allow_delegation=False,
-        max_iter=1,
+        max_iter=3,
     )
 
 
@@ -145,7 +145,7 @@ def build_business_plan_agent():
             "business plans that secured millions in funding from top VCs."
         ),
         llm=_smart_llm(0.6),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -164,7 +164,7 @@ def build_pitch_deck_agent():
             "and YC look for."
         ),
         llm=_smart_llm(0.7),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -183,7 +183,7 @@ def build_market_research_agent():
             "and identifying white-space opportunities across industries."
         ),
         llm=_smart_llm(0.4),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -202,7 +202,7 @@ def build_competitor_analysis_agent():
             "Five Forces, and positioning maps to deliver sharp, actionable intelligence."
         ),
         llm=_smart_llm(0.4),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -221,7 +221,7 @@ def build_product_launch_agent():
             "stories and coordinate cross-functional launches flawlessly."
         ),
         llm=_smart_llm(0.6),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -240,7 +240,7 @@ def build_financial_projections_agent():
             "pre-revenue startups to $50M ARR scale-ups."
         ),
         llm=_smart_llm(0.2),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -259,7 +259,7 @@ def build_youtube_strategy_agent():
             "and the content formats that convert viewers into loyal subscribers."
         ),
         llm=_smart_llm(0.8),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -278,7 +278,7 @@ def build_blog_newsletter_agent():
             "storytelling to create content that ranks and retains readers."
         ),
         llm=_smart_llm(0.7),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -297,7 +297,7 @@ def build_social_media_agent():
             "viral patterns that drive explosive organic growth."
         ),
         llm=_smart_llm(0.8),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -316,7 +316,7 @@ def build_study_plan_agent():
             "You have helped 500+ students improve grades significantly."
         ),
         llm=_smart_llm(0.5),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -335,7 +335,7 @@ def build_career_planning_agent():
             "industry knowledge with personal branding expertise."
         ),
         llm=_smart_llm(0.6),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -354,7 +354,7 @@ def build_research_paper_agent():
             "social sciences, and humanities."
         ),
         llm=_smart_llm(0.4),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -373,7 +373,7 @@ def build_client_deliverables_agent():
             "proportionally scaling headcount."
         ),
         llm=_smart_llm(0.5),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -392,7 +392,7 @@ def build_campaign_strategy_agent():
             "email, and influencer channels."
         ),
         llm=_smart_llm(0.6),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -411,7 +411,7 @@ def build_proposal_pricing_agent():
             "value clearly, handle price objections, and close deals."
         ),
         llm=_smart_llm(0.6),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -430,7 +430,7 @@ def build_life_organization_agent():
             "design purposeful, high-performance lives."
         ),
         llm=_smart_llm(0.7),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -449,7 +449,7 @@ def build_travel_planning_agent():
             "food, and budget for every type of traveller."
         ),
         llm=_smart_llm(0.7),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -469,7 +469,7 @@ def build_cooking_planning_agent():
             "(keto, vegan, Mediterranean, etc.) and budget."
         ),
         llm=_smart_llm(0.7),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -488,7 +488,7 @@ def build_brainstorm_agent():
             "both wild creative ideas and practical, implementable concepts."
         ),
         llm=_smart_llm(0.9),
-        verbose=True, allow_delegation=False, max_iter=5,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
@@ -506,7 +506,7 @@ def build_casual_agent():
             "rather than making things up."
         ),
         llm=_smart_llm(0.8),
-        verbose=True, allow_delegation=False, max_iter=3,
+        verbose=True, allow_delegation=False, max_iter=15,
     )
 
 
