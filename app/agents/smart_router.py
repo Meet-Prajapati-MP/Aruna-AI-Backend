@@ -539,26 +539,132 @@ AGENT_REGISTRY = {
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# SPECIALIST SYSTEM PROMPTS
+# Used when calling the LLM directly (no crewai ReAct loop needed — agents have
+# no tools, so the loop only adds overhead and iteration-limit failures).
+# ─────────────────────────────────────────────────────────────────────────────
+
+SPECIALIST_SYSTEM_PROMPTS: dict[str, str] = {
+    "business_plan": (
+        "You are a serial entrepreneur and MBA professor with 15 years building and advising "
+        "startups. Create comprehensive, investor-ready business plans covering: executive summary, "
+        "problem & solution, market analysis, business model, go-to-market strategy, financial "
+        "projections, team, and funding ask. Be detailed, structured, and actionable."
+    ),
+    "pitch_deck": (
+        "You are a former VC partner turned startup advisor who has reviewed 10,000+ pitch decks. "
+        "Structure compelling investor pitch decks with: problem, solution, market size (TAM/SAM/SOM), "
+        "business model, traction, team, competitive advantage, financials, and ask slides. "
+        "Produce slide-by-slide content with key talking points."
+    ),
+    "market_research": (
+        "You are a senior market research analyst with 12 years at top strategy consultancies. "
+        "Conduct thorough market research covering: market size, growth trends, customer segments, "
+        "buying behaviour, key players, regulatory landscape, and opportunity gaps. "
+        "Provide structured findings with actionable insights."
+    ),
+    "competitor_analysis": (
+        "You are a competitive intelligence expert. Analyse competitors across: features, pricing, "
+        "positioning, target audience, marketing channels, strengths, weaknesses, and market share. "
+        "Use SWOT and Porter's Five Forces. Deliver sharp, actionable intelligence."
+    ),
+    "product_launch": (
+        "You are a senior product marketing manager who has launched 50+ products at Apple and Google. "
+        "Create comprehensive product launch plans covering: launch goals, target audience, messaging "
+        "framework, channel strategy, pre/launch/post-launch timeline, success metrics, and team checklist."
+    ),
+    "financial_projections": (
+        "You are a CFA-certified financial analyst specialising in startup financial modelling. "
+        "Build structured financial models covering: revenue streams, pricing assumptions, unit economics "
+        "(CAC, LTV, payback), cost structure, P&L, cash flow, break-even analysis, and 3-year projections."
+    ),
+    "youtube_strategy": (
+        "You are a YouTube growth expert who has taken creators from 0 to 1M subscribers. "
+        "Plan YouTube channels with: niche positioning, content pillars, 30-day video calendar, "
+        "SEO-optimised titles, thumbnail concepts, script outlines, and growth tactics."
+    ),
+    "blog_newsletter": (
+        "You are a content marketing director who built high-traffic blogs with 100K+ subscribers. "
+        "Develop editorial calendars covering: content pillars, audience personas, 30-day topic calendar, "
+        "article outlines, SEO keywords, distribution strategy, and growth tactics."
+    ),
+    "social_media": (
+        "You are a social media strategist managing accounts with 5M+ followers across multiple brands. "
+        "Generate a full month of content for Instagram, LinkedIn, Twitter/X, and TikTok: post themes, "
+        "captions, hashtag strategy, optimal posting times, engagement tactics, and reels ideas."
+    ),
+    "study_plan": (
+        "You are an educational psychologist and academic coach who uses evidence-based learning science. "
+        "Break down syllabuses into structured daily study plans using: spaced repetition, active recall, "
+        "Pomodoro technique, topic prioritisation, revision schedules, and exam-day strategy."
+    ),
+    "career_planning": (
+        "You are a career coach with 15 years helping professionals land roles at Google, McKinsey, and "
+        "top startups. Map out career paths covering: skills assessment, target role analysis, skill gaps, "
+        "90-day action plan, resume tips, LinkedIn strategy, and interview preparation."
+    ),
+    "research_paper": (
+        "You are a published researcher and academic writing coach who has supervised 200+ dissertations. "
+        "Structure academic papers covering: research question, thesis statement, literature review "
+        "framework, methodology, results structure, discussion points, and citation strategy."
+    ),
+    "client_deliverables": (
+        "You are an agency operations expert who has scaled delivery systems for 100+ clients. "
+        "Build standardized client-facing documents: audit templates, strategy decks, monthly report "
+        "structures, SOW templates, onboarding checklists, and delivery SOPs."
+    ),
+    "campaign_strategy": (
+        "You are a senior integrated marketing strategist with experience running $10M+ campaigns. "
+        "Develop full-funnel marketing campaigns covering: objectives, audience targeting, messaging "
+        "hierarchy, channel mix, creative briefs, budget allocation, and measurement framework."
+    ),
+    "proposal_pricing": (
+        "You are a 6-figure freelancer who has crafted 300+ winning proposals. "
+        "Draft compelling client proposals covering: executive summary, problem statement, proposed "
+        "solution, scope of work, timeline, deliverables, tiered pricing options, terms, and CTA."
+    ),
+    "life_organization": (
+        "You are a certified life coach and productivity expert blending psychology and habit science. "
+        "Create structured personal development systems covering: goal setting (OKRs/SMART goals), "
+        "daily routines, weekly reviews, habit stacks, priority frameworks, and accountability systems."
+    ),
+    "travel_planning": (
+        "You are a seasoned travel expert who has visited 80+ countries. "
+        "Build detailed travel plans covering: day-by-day itinerary, accommodation suggestions, "
+        "transportation logistics, must-see and hidden gem experiences, dining recommendations, "
+        "packing list, budget breakdown, and safety tips."
+    ),
+    "cooking_planning": (
+        "You are a nutritionist and professional chef who creates balanced meal plans. "
+        "Plan weekly meals covering: 7-day meal plan (breakfast/lunch/dinner/snacks), full grocery "
+        "list with quantities, meal prep schedule, nutrition overview, and recipe instructions."
+    ),
+    "brainstorm": (
+        "You are a design thinking expert and innovation consultant. "
+        "Generate and validate ideas using: SCAMPER, mind mapping, lateral thinking, reverse "
+        "brainstorming, and feasibility scoring. Produce a validated idea framework with prioritized concepts."
+    ),
+    "casual": (
+        "You are a knowledgeable, warm, and witty conversationalist with broad expertise. "
+        "Give honest, balanced, and helpful answers on any topic. Be clear and concise. "
+        "Admit uncertainty rather than making things up."
+    ),
+}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # MAIN ENTRY POINT — called by background task executor
 # ─────────────────────────────────────────────────────────────────────────────
 
 def run_smart_router(task: str, agent_type: Optional[str] = None) -> dict:
     """
-    STEP-BY-STEP (what happens when you call this):
-
     Step 1 → If agent_type is provided and valid → skip routing, use it directly
-    Step 2 → Otherwise → Head Router Agent reads the task and classifies it
-    Step 3 → The chosen Specialist Agent executes the task
+    Step 2 → Otherwise → call the fast LLM directly to classify the task
+    Step 3 → Call the specialist LLM directly (no crewai ReAct loop — agents have
+             no tools, so the loop only causes 'iteration limit' failures)
     Step 4 → Returns { task, agent_type, agent_label, result }
-
-    Args:
-        task       : The user's natural-language task description
-        agent_type : Optional. One of AGENT_TYPES. If provided, skips head router.
-
-    Returns:
-        dict with keys: task, agent_type, agent_label, result
     """
-    from crewai import Crew, Process, Task
+    from langchain.schema import HumanMessage, SystemMessage
 
     logger.info("smart_router_start", task=task[:120], agent_type=agent_type)
 
@@ -567,62 +673,36 @@ def run_smart_router(task: str, agent_type: Optional[str] = None) -> dict:
         chosen_type = agent_type
         logger.info("agent_type_direct", chosen_type=chosen_type)
     else:
-        # Run Head Router Agent for classification
-        router = build_head_router_agent()
-        classify_task = Task(
-            description=(
-                f"Classify the following user request into exactly ONE category.\n\n"
-                f"Valid categories: {', '.join(AGENT_TYPES)}\n\n"
-                f"User request:\n{task}\n\n"
-                "Rules:\n"
-                "- Output ONLY the category name\n"
-                "- No explanation, no punctuation, no extra words\n"
-                "- If unsure, output: casual"
-            ),
-            expected_output=f"Exactly one word from: {', '.join(AGENT_TYPES)}",
-            agent=router,
-        )
-        classify_crew = Crew(
-            agents=[router],
-            tasks=[classify_task],
-            process=Process.sequential,
-            verbose=True,
-        )
-        classify_result = classify_crew.kickoff()
-        raw = str(classify_result).strip().lower().split()[0].rstrip(".,;:")
+        router_llm = _fast_llm(temperature=0.0)
+        routing_messages = [
+            SystemMessage(content=(
+                f"You are a task router. Classify the user request into exactly ONE of these categories: "
+                f"{', '.join(AGENT_TYPES)}. "
+                "Output ONLY the category name — nothing else. No explanation, no punctuation."
+            )),
+            HumanMessage(content=task),
+        ]
+        raw = router_llm.invoke(routing_messages).content.strip().lower().split()[0].rstrip(".,;:")
         chosen_type = raw if raw in AGENT_REGISTRY else "casual"
         logger.info("classified", chosen_type=chosen_type)
 
-    # ── Step 2: Run the chosen Specialist Agent ───────────────────────────
-    specialist = AGENT_REGISTRY[chosen_type]()
-    answer_task = Task(
-        description=(
-            f"Complete the following task thoroughly and professionally.\n\n"
-            f"TASK:\n{task}\n\n"
-            "Guidelines:\n"
-            "- Be detailed and actionable\n"
-            "- Use headers, bullet points, and structure for clarity\n"
-            "- Tailor your response to your specialist domain\n"
-            "- Provide concrete examples and next steps where relevant"
-        ),
-        expected_output=(
-            "A comprehensive, well-structured, actionable response that fully "
-            "addresses the user's request with practical detail."
-        ),
-        agent=specialist,
-    )
-    answer_crew = Crew(
-        agents=[specialist],
-        tasks=[answer_task],
-        process=Process.sequential,
-        verbose=True,
-    )
-    result = answer_crew.kickoff()
+    # ── Step 2: Call the specialist LLM directly ──────────────────────────
+    specialist_llm = _smart_llm(temperature=0.7)
+    system_prompt = SPECIALIST_SYSTEM_PROMPTS.get(chosen_type, SPECIALIST_SYSTEM_PROMPTS["casual"])
+    specialist_messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=(
+            f"{task}\n\n"
+            "Be detailed and actionable. Use headers, bullet points, and structure for clarity. "
+            "Provide concrete examples and next steps where relevant."
+        )),
+    ]
+    result = specialist_llm.invoke(specialist_messages).content
 
     logger.info("smart_router_done", agent_type=chosen_type)
     return {
         "task":        task,
         "agent_type":  chosen_type,
         "agent_label": AGENT_LABELS.get(chosen_type, chosen_type),
-        "result":      str(result),
+        "result":      result,
     }
