@@ -82,10 +82,10 @@ def _fast_llm(temperature: float = 0.0):
     """Cheap & fast — used by the head router for classification only."""
     from langchain_openai import ChatOpenAI
     return ChatOpenAI(
-        model="meta-llama/llama-3.1-8b-instruct:free",
+        model="meta/llama-3.1-8b-instruct",
         temperature=temperature,
-        openai_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
-        openai_api_base=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        openai_api_key=os.environ.get("NVIDIA_API_KEY", ""),
+        openai_api_base="https://integrate.api.nvidia.com/v1",
     )
 
 
@@ -93,10 +93,10 @@ def _smart_llm(temperature: float = 0.6):
     """Capable model — used by all specialist agents."""
     from langchain_openai import ChatOpenAI
     return ChatOpenAI(
-        model="meta-llama/llama-3.1-8b-instruct:free",
+        model="meta/llama-3.1-70b-instruct",
         temperature=temperature,
-        openai_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
-        openai_api_base=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        openai_api_key=os.environ.get("NVIDIA_API_KEY", ""),
+        openai_api_base="https://integrate.api.nvidia.com/v1",
     )
 
 
