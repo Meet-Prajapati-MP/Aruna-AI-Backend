@@ -82,7 +82,7 @@ def _fast_llm(temperature: float = 0.0):
     """Cheap & fast — used by the head router for classification only."""
     from crewai import LLM
     return LLM(
-        model="openrouter/anthropic/claude-3-haiku",
+        model="openrouter/anthropic/claude-3-haiku-20240307",
         temperature=temperature,
         api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
@@ -93,7 +93,7 @@ def _smart_llm(temperature: float = 0.6):
     """Capable model — used by all specialist agents."""
     from crewai import LLM
     return LLM(
-        model="openrouter/anthropic/claude-3-5-sonnet",
+        model="openrouter/anthropic/claude-3-5-sonnet-20241022",
         temperature=temperature,
         api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),

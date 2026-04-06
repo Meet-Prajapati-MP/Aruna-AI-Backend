@@ -182,10 +182,12 @@ def execute_task_background(task_id: str, task_description: str, complexity: Opt
         logger.info("task_completed", task_id=task_id, agent_type=output.get("agent_type"))
 
     except Exception as exc:
-        logger.error("task_failed", task_id=task_id, error=str(exc))
+        import traceback
+        error_detail = f"{type(exc).__name__}: {exc}"
+        logger.error("task_failed", task_id=task_id, error=error_detail, traceback=traceback.format_exc())
         _task_store[task_id].update({
             "status": "failed",
-            "error": "Task execution failed. Please try again.",
+            "error": error_detail,
             "completed_at": datetime.now(timezone.utc).isoformat(),
         })
 
@@ -245,9 +247,11 @@ def execute_smart_task_background(
         })
         logger.info("smart_task_completed", task_id=task_id, agent_type=output.get("agent_type"))
     except Exception as exc:
-        logger.error("smart_task_failed", task_id=task_id, error=str(exc))
+        import traceback
+        error_detail = f"{type(exc).__name__}: {exc}"
+        logger.error("smart_task_failed", task_id=task_id, error=error_detail, traceback=traceback.format_exc())
         _task_store[task_id].update({
             "status": "failed",
-            "error": "Task execution failed. Please try again.",
+            "error": error_detail,
             "completed_at": datetime.now(timezone.utc).isoformat(),
         })
