@@ -7,6 +7,7 @@ Supabase signs its JWTs with the project's JWT secret.
 We verify them locally — no round-trip to Supabase on every request.
 """
 
+import base64
 from datetime import datetime, timezone
 from typing import Any, Optional
 
@@ -34,10 +35,17 @@ def decode_supabase_jwt(token: str) -> dict[str, Any]:
     Raises TokenValidationError on any failure.
     """
     settings = get_settings()
+    # Supabase stores the JWT secret as a base64-encoded string in the dashboard.
+    # GoTrue signs tokens using the decoded bytes, so we try decoded first.
+    raw_secret = settings.SUPABASE_JWT_SECRET
+    try:
+        secret = base64.b64decode(raw_secret + '==')
+    except Exception:
+        secret = raw_secret.encode('utf-8')
     try:
         payload = jwt.decode(
             token,
-            settings.SUPABASE_JWT_SECRET,
+            secret,
             algorithms=[_ALGORITHM],
             options={"verify_aud": False},  # Supabase sets 'authenticated' as audience
         )
