@@ -82,7 +82,7 @@ def _fast_llm(temperature: float = 0.0):
     """Cheap & fast — used by the head router for classification only."""
     from langchain_openai import ChatOpenAI
     return ChatOpenAI(
-        model="anthropic/claude-3-haiku-20240307",
+        model="anthropic/claude-3-haiku",
         temperature=temperature,
         openai_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         openai_api_base=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
@@ -93,7 +93,7 @@ def _smart_llm(temperature: float = 0.6):
     """Capable model — used by all specialist agents."""
     from langchain_openai import ChatOpenAI
     return ChatOpenAI(
-        model="anthropic/claude-3-5-sonnet-20241022",
+        model="anthropic/claude-3.5-sonnet",
         temperature=temperature,
         openai_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         openai_api_base=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
