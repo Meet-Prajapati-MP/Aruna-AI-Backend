@@ -31,24 +31,22 @@ logger = get_logger(__name__)
 
 def _make_llm(complexity: TaskComplexity, temperature: float = 0.7):
     """
-    Build a CrewAI LLM object pointing at OpenRouter.
-    LiteLLM resolves 'openrouter/<model>' to the correct endpoint.
+    Build a LangChain ChatOpenAI LLM pointing at OpenRouter.
+    crewai 0.51.0 does not ship crewai.LLM — use langchain_openai instead.
     """
-    from crewai import LLM  # noqa: PLC0415  deferred import
+    from langchain_openai import ChatOpenAI  # noqa: PLC0415  deferred import
     settings = get_settings()
-    # ── LiteLLM needs the OpenRouter key in the environment ──────────────────
-    # CrewAI/LiteLLM reads OPENROUTER_API_KEY automatically when the model
-    # string is prefixed with 'openrouter/'.
-    os.environ.setdefault("OPENROUTER_API_KEY", settings.OPENROUTER_API_KEY)
-    model_string = get_crewai_llm_string(complexity)
-    return LLM(
+    model_string = get_crewai_llm_string(complexity).removeprefix("openrouter/")
+    return ChatOpenAI(
         model=model_string,
         temperature=temperature,
-        api_key=settings.OPENROUTER_API_KEY,
-        base_url=settings.OPENROUTER_BASE_URL,
-        extra_headers={
-            "HTTP-Referer": settings.OPENROUTER_APP_URL,
-            "X-Title": settings.OPENROUTER_APP_NAME,
+        openai_api_key=settings.OPENROUTER_API_KEY,
+        openai_api_base=settings.OPENROUTER_BASE_URL,
+        model_kwargs={
+            "extra_headers": {
+                "HTTP-Referer": settings.OPENROUTER_APP_URL,
+                "X-Title": settings.OPENROUTER_APP_NAME,
+            }
         },
     )
 
